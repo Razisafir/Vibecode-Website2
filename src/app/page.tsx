@@ -62,9 +62,8 @@ export default function HomePage() {
           <div className="hidden md:flex items-center gap-6 text-sm text-gray-400">
             <a href="#features" className="hover:text-white transition-colors">Features</a>
             <a href="#ai" className="hover:text-white transition-colors">AI Engine</a>
+            <a href="/Vibecode-Website2/downloads" className="hover:text-emerald-400 transition-colors font-medium">Download</a>
             <a href="#contact" className="hover:text-white transition-colors">Contact</a>
-            <a href="#newsletter" className="hover:text-white transition-colors">Newsletter</a>
-            <a href="/admin" className="hover:text-white transition-colors">Admin</a>
           </div>
         </div>
       </nav>

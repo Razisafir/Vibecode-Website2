@@ -2,6 +2,7 @@ import { Download, Monitor, Apple, Smartphone, ArrowRight, Terminal, Package, Ch
 
 const GITHUB_REPO = "Razisafir/Real-vibecode";
 const GITHUB_RELEASES = `https://github.com/${GITHUB_REPO}/releases/latest`;
+const VERSION = "1.121.1";
 
 const PLATFORMS = [
   {
@@ -10,14 +11,14 @@ const PLATFORMS = [
     version: "Windows 10+",
     size: "~80 MB",
     ext: "exe",
-    filename: "RealVibecode-Setup-1.121.1-x64.exe",
+    filename: `VibeCode-Setup-${VERSION}-x64.exe`,
     arch: "x64",
-    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/RealVibecode-Setup-1.121.1-x64.exe`,
+    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-Setup-${VERSION}-x64.exe`,
     installSteps: [
       "Download and run the .exe installer",
       "If Windows shows a SmartScreen warning, click \"More info\" → \"Run anyway\"",
-      "Follow the installation wizard",
-      "Launch Real Vibecode from the Start Menu or Desktop shortcut",
+      "Follow the installation wizard — choose install location and options",
+      "Launch VibeCode from the Start Menu or Desktop shortcut",
     ],
   },
   {
@@ -26,12 +27,12 @@ const PLATFORMS = [
     version: "macOS 12+ (Monterey)",
     size: "~89 MB",
     ext: "dmg",
-    filename: "RealVibecode-1.121.1-mac-x64.dmg",
+    filename: `VibeCode-${VERSION}-mac-x64.dmg`,
     arch: "Universal (x64 + ARM64)",
-    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/RealVibecode-1.121.1-mac-x64.dmg`,
+    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-mac-x64.dmg`,
     installSteps: [
       "Download and open the .dmg file",
-      "Drag Real Vibecode to the Applications folder",
+      "Drag VibeCode to the Applications folder",
       "Right-click the app and select \"Open\" the first time",
       "If blocked, go to System Settings → Privacy & Security → click \"Open Anyway\"",
     ],
@@ -42,13 +43,13 @@ const PLATFORMS = [
     version: "Ubuntu 20.04+ / Fedora 36+",
     size: "~90 MB",
     ext: "AppImage",
-    filename: "RealVibecode-1.121.1-linux-x64.AppImage",
+    filename: `VibeCode-${VERSION}-linux-x64.AppImage`,
     arch: "x64",
-    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/RealVibecode-1.121.1-linux-x64.AppImage`,
+    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-linux-x64.AppImage`,
     installSteps: [
       "Download the .AppImage file",
-      "Make it executable: chmod +x RealVibecode-*.AppImage",
-      "Run it: ./RealVibecode-*.AppImage",
+      "Make it executable: chmod +x VibeCode-*.AppImage",
+      "Run it: ./VibeCode-*.AppImage",
       "Optionally, install the .deb or .rpm package from GitHub Releases",
     ],
   },
@@ -67,12 +68,12 @@ export default function DownloadsPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold tracking-tight">Download Real Vibecode</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Download VibeCode</h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
             AI-native code editing, available on all platforms. Free to use — no subscriptions, no hidden fees.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Version 1.121.1 &middot; Built from VS Code source &middot; May 2026
+            Version {VERSION} &middot; Built from VS Code source &middot; May 2026
           </p>
         </div>
 
@@ -152,12 +153,16 @@ export default function DownloadsPage() {
                 click <strong>&quot;Open Anyway&quot;</strong>.
               </li>
               <li>
-                <strong>Auto-updates:</strong> Real Vibecode will automatically check for updates on launch.
+                <strong>Auto-updates:</strong> VibeCode will automatically check for updates on launch.
                 New versions are downloaded and installed in the background.
               </li>
               <li>
                 <strong>vibecode:// protocol:</strong> The installer registers the <code className="rounded bg-muted px-1 py-0.5 text-xs">vibecode://</code> URL
                 protocol for deep linking from browsers and other apps.
+              </li>
+              <li>
+                <strong>Extensions:</strong> VibeCode uses the Open VSX marketplace for extensions. Most VS Code
+                extensions are available and can be installed from the Extensions panel.
               </li>
             </ul>
           </div>
@@ -174,19 +179,19 @@ export default function DownloadsPage() {
               <div>
                 <p className="text-muted-foreground mb-1">Windows (PowerShell):</p>
                 <code className="block rounded bg-zinc-900 text-zinc-100 px-3 py-2 font-mono">
-                  {`Invoke-WebRequest -Uri "https://github.com/${GITHUB_REPO}/releases/latest/download/RealVibecode-Setup-1.121.1-x64.exe" -OutFile "RealVibecode-Setup.exe"; .\\RealVibecode-Setup.exe`}
+                  {`Invoke-WebRequest -Uri "https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-Setup-${VERSION}-x64.exe" -OutFile "VibeCode-Setup.exe"; .\\VibeCode-Setup.exe`}
                 </code>
               </div>
               <div>
                 <p className="text-muted-foreground mb-1">macOS (Terminal):</p>
                 <code className="block rounded bg-zinc-900 text-zinc-100 px-3 py-2 font-mono">
-                  {`curl -L -o RealVibecode.dmg "https://github.com/${GITHUB_REPO}/releases/latest/download/RealVibecode-1.121.1-mac-x64.dmg" && open RealVibecode.dmg`}
+                  {`curl -L -o VibeCode.dmg "https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-mac-x64.dmg" && open VibeCode.dmg`}
                 </code>
               </div>
               <div>
                 <p className="text-muted-foreground mb-1">Linux (bash):</p>
                 <code className="block rounded bg-zinc-900 text-zinc-100 px-3 py-2 font-mono">
-                  {`curl -L -o RealVibecode.AppImage "https://github.com/${GITHUB_REPO}/releases/latest/download/RealVibecode-1.121.1-linux-x64.AppImage" && chmod +x RealVibecode.AppImage && ./RealVibecode.AppImage`}
+                  {`curl -L -o VibeCode.AppImage "https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-linux-x64.AppImage" && chmod +x VibeCode.AppImage && ./VibeCode.AppImage`}
                 </code>
               </div>
             </div>
