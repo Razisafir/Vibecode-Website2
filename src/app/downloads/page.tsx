@@ -2,7 +2,7 @@ import { Download, Monitor, Apple, Smartphone, ArrowRight, Terminal, Package, Ch
 
 const GITHUB_REPO = "Razisafir/Real-vibecode";
 const GITHUB_RELEASES = `https://github.com/${GITHUB_REPO}/releases/latest`;
-const VERSION = "1.121.1";
+const VERSION = "1.121.0";
 
 const PLATFORMS = [
   {
