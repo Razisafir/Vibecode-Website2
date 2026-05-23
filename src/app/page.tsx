@@ -87,7 +87,7 @@ export default function HomePage() {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="#features"
+              href="/Vibecode-Website2/downloads"
               className="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-6 py-3 text-sm font-semibold text-black hover:bg-emerald-400 transition-colors"
             >
               Download Free
@@ -126,8 +126,8 @@ export default function HomePage() {
               },
               {
                 icon: Globe,
-                title: 'Open Source',
-                desc: 'Built in the open. Fork, contribute, make it yours.',
+                title: 'Free to Use',
+                desc: 'Powerful IDE at zero cost. No subscriptions, no hidden fees.',
                 color: 'text-cyan-400',
               },
             ].map((feature) => (
