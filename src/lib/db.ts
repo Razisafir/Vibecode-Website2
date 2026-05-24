@@ -1,128 +1,157 @@
-import Database from 'better-sqlite3';
-import path from 'path';
+/**
+ * Vercel-compatible submission storage.
+ * Uses in-memory Maps with JSON file persistence via /tmp.
+ * Data persists across warm serverless invocations and resets on cold starts.
+ * For production, upgrade to Vercel KV, Vercel Postgres, or a real database.
+ */
+
 import fs from 'fs';
+import path from 'path';
 
-const DB_DIR = path.join(process.cwd(), 'data');
-const DB_PATH = path.join(DB_DIR, 'vibecode.db');
-
-let db: Database.Database | null = null;
-
-function getDb(): Database.Database {
-    if (db) return db;
-    
-    // Ensure data directory exists
-    if (!fs.existsSync(DB_DIR)) {
-        fs.mkdirSync(DB_DIR, { recursive: true });
-    }
-    
-    db = new Database(DB_PATH);
-    
-    // Enable WAL mode for better concurrency
-    db.pragma('journal_mode = WAL');
-    
-    // Create tables if they don't exist
-    db.exec(`
-        CREATE TABLE IF NOT EXISTS submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            type TEXT NOT NULL,
-            data TEXT NOT NULL,
-            email TEXT NOT NULL,
-            created_at TEXT NOT NULL DEFAULT (datetime('now'))
-        );
-        CREATE INDEX IF NOT EXISTS idx_submissions_type ON submissions(type);
-        CREATE INDEX IF NOT EXISTS idx_submissions_email ON submissions(email);
-        CREATE INDEX IF NOT EXISTS idx_submissions_created ON submissions(created_at);
-        
-        CREATE TABLE IF NOT EXISTS rate_limits (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL,
-            type TEXT NOT NULL,
-            created_at TEXT NOT NULL DEFAULT (datetime('now'))
-        );
-        CREATE INDEX IF NOT EXISTS idx_rate_limits_lookup ON rate_limits(email, type, created_at);
-    `);
-    
-    return db;
-}
+const DATA_DIR = path.join('/tmp', 'vibecode-data');
+const SUBMISSIONS_FILE = path.join(DATA_DIR, 'submissions.json');
+const RATE_LIMITS_FILE = path.join(DATA_DIR, 'rate_limits.json');
 
 export interface SubmissionRecord {
-    id: number;
-    type: string;
-    data: string; // JSON string of encrypted submission data
-    email: string;
-    created_at: string;
+  id: number;
+  type: string;
+  data: string;
+  email: string;
+  created_at: string;
+}
+
+interface RateLimitRecord {
+  email: string;
+  type: string;
+  created_at: string;
+}
+
+// In-memory stores
+let submissions: SubmissionRecord[] = [];
+let rateLimits: RateLimitRecord[] = [];
+let nextId = 1;
+let initialized = false;
+
+function ensureDataDir(): void {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch {
+    // /tmp might not be writable in some environments, that's OK
+  }
+}
+
+function loadFromDisk(): void {
+  if (initialized) return;
+  initialized = true;
+  try {
+    ensureDataDir();
+    if (fs.existsSync(SUBMISSIONS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(SUBMISSIONS_FILE, 'utf-8'));
+      submissions = data.submissions || [];
+      nextId = data.nextId || 1;
+    }
+    if (fs.existsSync(RATE_LIMITS_FILE)) {
+      rateLimits = JSON.parse(fs.readFileSync(RATE_LIMITS_FILE, 'utf-8'));
+    }
+  } catch {
+    // If loading fails, start fresh
+    submissions = [];
+    rateLimits = [];
+    nextId = 1;
+  }
+}
+
+function saveToDisk(): void {
+  try {
+    ensureDataDir();
+    fs.writeFileSync(SUBMISSIONS_FILE, JSON.stringify({ submissions, nextId }), 'utf-8');
+    fs.writeFileSync(RATE_LIMITS_FILE, JSON.stringify(rateLimits), 'utf-8');
+  } catch {
+    // If saving fails, data still lives in memory for this invocation
+  }
 }
 
 export function insertSubmission(type: string, data: Record<string, unknown>, email: string): number {
-    const database = getDb();
-    const stmt = database.prepare('INSERT INTO submissions (type, data, email) VALUES (?, ?, ?)');
-    const result = stmt.run(type, JSON.stringify(data), email);
-    return result.lastInsertRowid as number;
+  loadFromDisk();
+  const id = nextId++;
+  const record: SubmissionRecord = {
+    id,
+    type,
+    data: JSON.stringify(data),
+    email,
+    created_at: new Date().toISOString(),
+  };
+  submissions.push(record);
+  saveToDisk();
+  return id;
 }
 
 export function getSubmissions(type: string, limit?: number): SubmissionRecord[] {
-    const database = getDb();
-    const limitClause = limit ? `LIMIT ${limit}` : '';
-    const stmt = database.prepare(`SELECT * FROM submissions WHERE type = ? ORDER BY created_at DESC ${limitClause}`);
-    return stmt.all(type) as SubmissionRecord[];
+  loadFromDisk();
+  const filtered = submissions.filter(s => s.type === type);
+  filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  return limit ? filtered.slice(0, limit) : filtered;
 }
 
 export function getSubmissionsByEmail(email: string): SubmissionRecord[] {
-    const database = getDb();
-    const stmt = database.prepare('SELECT * FROM submissions WHERE email = ? ORDER BY created_at DESC');
-    return stmt.all(email) as SubmissionRecord[];
+  loadFromDisk();
+  return submissions.filter(s => s.email === email);
 }
 
 export function deleteSubmissionsByEmail(email: string): number {
-    const database = getDb();
-    const stmt = database.prepare('DELETE FROM submissions WHERE email = ?');
-    const result = stmt.run(email);
-    return result.changes;
+  loadFromDisk();
+  const before = submissions.length;
+  submissions = submissions.filter(s => s.email !== email);
+  const deleted = before - submissions.length;
+  saveToDisk();
+  return deleted;
 }
 
 export function checkRateLimit(email: string, type: string, maxPerHour: number): boolean {
-    const database = getDb();
-    const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
-    const stmt = database.prepare('SELECT COUNT(*) as count FROM rate_limits WHERE email = ? AND type = ? AND created_at > ?');
-    const result = stmt.get(email, type, oneHourAgo) as { count: number };
-    return result.count < maxPerHour;
+  loadFromDisk();
+  const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
+  const count = rateLimits.filter(
+    r => r.email === email && r.type === type && r.created_at > oneHourAgo
+  ).length;
+  return count < maxPerHour;
 }
 
 export function recordRateLimit(email: string, type: string): void {
-    const database = getDb();
-    const stmt = database.prepare('INSERT INTO rate_limits (email, type) VALUES (?, ?)');
-    stmt.run(email, type);
+  loadFromDisk();
+  rateLimits.push({ email, type, created_at: new Date().toISOString() });
+  saveToDisk();
 }
 
 export function getSubmissionStats(): Record<string, number> {
-    const database = getDb();
-    const stmt = database.prepare('SELECT type, COUNT(*) as count FROM submissions GROUP BY type');
-    const results = stmt.all() as { type: string; count: number }[];
-    const stats: Record<string, number> = {};
-    for (const r of results) {
-        stats[r.type] = r.count;
-    }
-    return stats;
+  loadFromDisk();
+  const stats: Record<string, number> = {};
+  for (const s of submissions) {
+    stats[s.type] = (stats[s.type] || 0) + 1;
+  }
+  return stats;
 }
 
 export function getRecentSubmissions(limit: number = 10): SubmissionRecord[] {
-    const database = getDb();
-    const stmt = database.prepare('SELECT * FROM submissions ORDER BY created_at DESC LIMIT ?');
-    return stmt.all(limit) as SubmissionRecord[];
+  loadFromDisk();
+  const sorted = [...submissions].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+  return sorted.slice(0, limit);
 }
 
 export function getTotalSubmissionCount(): number {
-    const database = getDb();
-    const stmt = database.prepare('SELECT COUNT(*) as count FROM submissions');
-    const result = stmt.get() as { count: number };
-    return result.count;
+  loadFromDisk();
+  return submissions.length;
 }
 
-// Clean up old rate limit records (call periodically)
 export function cleanupRateLimits(): number {
-    const database = getDb();
-    const oneDayAgo = new Date(Date.now() - 86400000).toISOString();
-    const stmt = database.prepare('DELETE FROM rate_limits WHERE created_at < ?');
-    const result = stmt.run(oneDayAgo);
-    return result.changes;
+  loadFromDisk();
+  const oneDayAgo = new Date(Date.now() - 86400000).toISOString();
+  const before = rateLimits.length;
+  rateLimits = rateLimits.filter(r => r.created_at > oneDayAgo);
+  const removed = before - rateLimits.length;
+  saveToDisk();
+  return removed;
 }

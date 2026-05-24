@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Code2, Zap, Shield, Globe, Brain, Terminal, ChevronRight, Mail, Users, TrendingUp, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { Code2, Zap, Shield, Globe, Brain, Terminal, ChevronRight, Mail, Users, TrendingUp, Sparkles, ArrowRight } from 'lucide-react';
 
 interface FormState {
   loading: boolean;
@@ -51,23 +52,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-[#e4e4e7]">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <Code2 className="h-7 w-7 text-emerald-400" />
-            <span className="text-xl font-bold text-white">VibeCode</span>
-          </div>
-          <div className="hidden md:flex items-center gap-6 text-sm text-gray-400">
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
-            <a href="#ai" className="hover:text-white transition-colors">AI Engine</a>
-            <a href="/Vibecode-Website2/downloads" className="hover:text-emerald-400 transition-colors font-medium">Download</a>
-            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
-          </div>
-        </div>
-      </nav>
-
+    <div>
       {/* Hero */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-purple-500/5" />
@@ -85,19 +70,33 @@ export default function HomePage() {
             helps you ship faster. Built for the next generation of developers.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/Vibecode-Website2/downloads"
+            <Link
+              href="/downloads"
               className="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-6 py-3 text-sm font-semibold text-black hover:bg-emerald-400 transition-colors"
             >
               Download Free
               <ChevronRight className="ml-1 h-4 w-4" />
-            </a>
+            </Link>
             <a
               href="#ai"
               className="inline-flex items-center justify-center rounded-lg border border-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/5 transition-colors"
             >
               Explore AI Features
             </a>
+          </div>
+          <div className="mt-6 flex items-center justify-center gap-6 text-sm text-gray-500">
+            <span className="flex items-center gap-1.5">
+              <Shield className="h-4 w-4 text-emerald-500" />
+              Free &amp; Open Source
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Globe className="h-4 w-4 text-emerald-500" />
+              Windows, Mac, Linux
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Zap className="h-4 w-4 text-emerald-500" />
+              AI-Powered
+            </span>
           </div>
         </div>
       </section>
@@ -114,19 +113,19 @@ export default function HomePage() {
               {
                 icon: Zap,
                 title: 'Lightning Fast',
-                desc: 'AI completions in under 100ms. Never break your flow.',
+                desc: 'AI completions in under 100ms. Never break your flow state. VibeCode is built for speed from the ground up, with a responsive UI and intelligent caching that keeps you in the zone.',
                 color: 'text-amber-400',
               },
               {
                 icon: Shield,
                 title: 'Secure by Default',
-                desc: 'Your code stays on your machine. Zero telemetry.',
+                desc: 'Your code stays on your machine. Zero telemetry, zero tracking. VibeCode respects your privacy completely and never sends your code to any server without your explicit permission.',
                 color: 'text-emerald-400',
               },
               {
                 icon: Globe,
                 title: 'Free to Use',
-                desc: 'Powerful IDE at zero cost. No subscriptions, no hidden fees.',
+                desc: 'Powerful IDE at zero cost. No subscriptions, no hidden fees, no feature gates. VibeCode is open source and free forever, because great developer tools should be accessible to everyone.',
                 color: 'text-cyan-400',
               },
             ].map((feature) => (
@@ -156,8 +155,10 @@ export default function HomePage() {
                 An editor that <span className="text-emerald-400">thinks</span> with you
               </h2>
               <p className="mt-4 text-gray-400">
-                VibeCode&apos;s AI Execution Kernel goes beyond simple autocomplete. It understands your codebase, 
-                anticipates your intent, and can execute multi-step operations autonomously.
+                VibeCode&apos;s AI Execution Kernel goes beyond simple autocomplete. It understands your codebase,
+                anticipates your intent, and can execute multi-step operations autonomously. From refactoring
+                entire modules to generating boilerplate and running tests, the AI kernel handles the heavy lifting
+                so you can focus on what matters most: building great software.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -172,6 +173,15 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
+              <div className="mt-8">
+                <Link
+                  href="/features"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                >
+                  See all features
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
             </div>
             <div className="rounded-xl border border-white/5 bg-[#12121a] p-6 font-mono text-sm">
               <div className="flex items-center gap-2 mb-4 text-gray-500">
@@ -214,8 +224,34 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-white">Ready to Vibe?</h2>
+          <p className="mt-4 text-gray-400 text-lg">
+            Download VibeCode for free and experience the future of coding today.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/downloads"
+              className="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-8 py-3 text-sm font-semibold text-black hover:bg-emerald-400 transition-colors"
+            >
+              Download for Free
+              <ChevronRight className="ml-1 h-4 w-4" />
+            </Link>
+            <Link
+              href="/careers"
+              className="inline-flex items-center justify-center rounded-lg border border-white/10 px-8 py-3 text-sm font-semibold text-white hover:bg-white/5 transition-colors"
+            >
+              Join Our Team
+              <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Form */}
-      <section id="contact" className="py-20">
+      <section id="contact" className="py-20 bg-[#0d0d15]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
@@ -225,17 +261,17 @@ export default function HomePage() {
               </div>
               <h2 className="text-3xl font-bold text-white">Contact Us</h2>
               <p className="mt-4 text-gray-400">
-                Have questions about VibeCode? Want to integrate it into your workflow? 
-                We&apos;d love to hear from you.
+                Have questions about VibeCode? Want to integrate it into your workflow or explore enterprise solutions?
+                We&apos;d love to hear from you. Our team typically responds within 24 hours.
               </p>
               <div className="mt-8 space-y-4">
                 <div className="flex items-center gap-3 text-gray-300">
                   <Users className="h-5 w-5 text-emerald-400" />
-                  <span className="text-sm">Community Support</span>
+                  <span className="text-sm">Community Support via GitHub &amp; Discord</span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-300">
                   <TrendingUp className="h-5 w-5 text-emerald-400" />
-                  <span className="text-sm">Enterprise Solutions</span>
+                  <span className="text-sm">Enterprise Solutions &amp; Custom Integrations</span>
                 </div>
               </div>
             </div>
@@ -304,12 +340,12 @@ export default function HomePage() {
       </section>
 
       {/* Newsletter */}
-      <section id="newsletter" className="py-16 bg-[#0d0d15]">
+      <section id="newsletter" className="py-16">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
           <Mail className="h-8 w-8 text-emerald-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-white">Stay in the Loop</h2>
           <p className="mt-2 text-gray-400 text-sm">
-            Get updates on new features, AI capabilities, and developer stories.
+            Get updates on new features, AI capabilities, and developer stories. No spam, ever.
           </p>
           <form onSubmit={handleNewsletterSubmit} className="mt-6 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
@@ -330,23 +366,6 @@ export default function HomePage() {
           </form>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-8 border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Code2 className="h-5 w-5 text-emerald-400" />
-              <span className="text-sm text-gray-400">VibeCode</span>
-            </div>
-            <div className="flex items-center gap-6 text-xs text-gray-500">
-              <a href="/admin" className="hover:text-gray-300 transition-colors">Admin</a>
-              <a href="/api/health" className="hover:text-gray-300 transition-colors">Health</a>
-              <span>&copy; {new Date().getFullYear()} VibeCode. All rights reserved.</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

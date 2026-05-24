@@ -7,10 +7,9 @@ import { useState } from "react";
 
 const navLinks = [
   { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
   { href: "/downloads", label: "Download" },
+  { href: "/careers", label: "Careers" },
   { href: "/docs", label: "Docs" },
-  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
 ];
 
@@ -18,12 +17,12 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-white/5 bg-[#0a0a0f]/80 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <Code2 className="h-6 w-6 text-emerald-500" />
-            <span>VibeCode</span>
+            <span className="text-white">VibeCode</span>
           </Link>
 
           {/* Desktop nav */}
@@ -32,11 +31,17 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
               >
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/downloads"
+              className="inline-flex items-center justify-center rounded-lg bg-emerald-500 px-4 py-1.5 text-sm font-semibold text-black hover:bg-emerald-400 transition-colors"
+            >
+              Get Free
+            </Link>
             <ThemeToggle />
           </div>
 
@@ -46,7 +51,7 @@ export function Navbar() {
             <button
               aria-label="Toggle menu"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent"
+              className="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent text-gray-400"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -60,12 +65,19 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="block py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                className="block py-2 text-sm font-medium text-gray-400 hover:text-white"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/downloads"
+              className="block py-2 text-sm font-semibold text-emerald-400"
+              onClick={() => setMobileOpen(false)}
+            >
+              Download Free
+            </Link>
           </div>
         )}
       </div>
