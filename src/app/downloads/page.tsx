@@ -5,6 +5,7 @@ const GITHUB_REPO = "Razisafir/Real-vibecode";
 const GITHUB_RELEASES = `https://github.com/${GITHUB_REPO}/releases/latest`;
 const VERSION = "1.121.1";
 
+// Asset names must match exactly what GitHub Actions produces in the release
 const PLATFORMS = [
   {
     icon: Monitor,
@@ -12,9 +13,9 @@ const PLATFORMS = [
     version: "Windows 10+",
     size: "~80 MB",
     ext: "exe",
-    filename: `VibeCode-Setup-${VERSION}-x64.exe`,
+    filename: `Real-Vibecode-Setup-${VERSION}-x64.exe`,
     arch: "x64",
-    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-Setup-${VERSION}-x64.exe`,
+    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-Setup-${VERSION}-x64.exe`,
     installSteps: [
       "Download and run the .exe installer",
       "If Windows shows a SmartScreen warning, click \"More info\" → \"Run anyway\"",
@@ -26,11 +27,11 @@ const PLATFORMS = [
     icon: Apple,
     platform: "macOS",
     version: "macOS 12+ (Monterey)",
-    size: "~89 MB",
+    size: "~92 MB",
     ext: "dmg",
-    filename: `VibeCode-${VERSION}-mac-x64.dmg`,
+    filename: `Real-Vibecode-${VERSION}-mac-x64.dmg`,
     arch: "Universal (x64 + ARM64)",
-    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-mac-x64.dmg`,
+    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-mac-x64.dmg`,
     installSteps: [
       "Download and open the .dmg file",
       "Drag VibeCode to the Applications folder",
@@ -42,11 +43,11 @@ const PLATFORMS = [
     icon: Smartphone,
     platform: "Linux",
     version: "Ubuntu 20.04+ / Fedora 36+",
-    size: "~90 MB",
+    size: "~82 MB",
     ext: "AppImage",
-    filename: `VibeCode-${VERSION}-linux-x64.AppImage`,
+    filename: `Real-Vibecode-${VERSION}-linux-x86_64.AppImage`,
     arch: "x64",
-    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-linux-x64.AppImage`,
+    directUrl: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-linux-x86_64.AppImage`,
     installSteps: [
       "Download the .AppImage file",
       "Make it executable: chmod +x VibeCode-*.AppImage",
@@ -57,10 +58,12 @@ const PLATFORMS = [
 ];
 
 const ALT_DOWNLOADS = [
-  { label: "Windows ARM64 (.exe)", url: `https://github.com/${GITHUB_REPO}/releases/latest` },
-  { label: "macOS ZIP archive", url: `https://github.com/${GITHUB_REPO}/releases/latest` },
-  { label: "Linux .deb (Debian/Ubuntu)", url: `https://github.com/${GITHUB_REPO}/releases/latest` },
-  { label: "Linux .rpm (Fedora/RHEL)", url: `https://github.com/${GITHUB_REPO}/releases/latest` },
+  { label: "Windows ARM64 (.exe)", url: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-Setup-${VERSION}-arm64.exe` },
+  { label: "macOS ARM64 (M1/M2/M3) (.dmg)", url: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-mac-arm64.dmg` },
+  { label: "Linux .deb (Debian/Ubuntu)", url: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-linux-amd64.deb` },
+  { label: "Linux .rpm (Fedora/RHEL)", url: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-linux-x86_64.rpm` },
+  { label: "macOS ARM64 ZIP archive", url: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-darwin-arm64.zip` },
+  { label: "macOS x64 ZIP archive", url: `https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-darwin-x64.zip` },
 ];
 
 export default function DownloadsPage() {
@@ -184,19 +187,19 @@ export default function DownloadsPage() {
               <div>
                 <p className="text-gray-500 mb-1">Windows (PowerShell):</p>
                 <code className="block rounded bg-[#0a0a0f] text-gray-300 px-3 py-2 font-mono">
-                  {`Invoke-WebRequest -Uri "https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-Setup-${VERSION}-x64.exe" -OutFile "VibeCode-Setup.exe"; .\\VibeCode-Setup.exe`}
+                  {`Invoke-WebRequest -Uri "https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-Setup-${VERSION}-x64.exe" -OutFile "VibeCode-Setup.exe"; .\\VibeCode-Setup.exe`}
                 </code>
               </div>
               <div>
                 <p className="text-gray-500 mb-1">macOS (Terminal):</p>
                 <code className="block rounded bg-[#0a0a0f] text-gray-300 px-3 py-2 font-mono">
-                  {`curl -L -o VibeCode.dmg "https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-mac-x64.dmg" && open VibeCode.dmg`}
+                  {`curl -L -o VibeCode.dmg "https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-mac-x64.dmg" && open VibeCode.dmg`}
                 </code>
               </div>
               <div>
                 <p className="text-gray-500 mb-1">Linux (bash):</p>
                 <code className="block rounded bg-[#0a0a0f] text-gray-300 px-3 py-2 font-mono">
-                  {`curl -L -o VibeCode.AppImage "https://github.com/${GITHUB_REPO}/releases/latest/download/VibeCode-${VERSION}-linux-x64.AppImage" && chmod +x VibeCode.AppImage && ./VibeCode.AppImage`}
+                  {`curl -L -o VibeCode.AppImage "https://github.com/${GITHUB_REPO}/releases/latest/download/Real-Vibecode-${VERSION}-linux-x86_64.AppImage" && chmod +x VibeCode.AppImage && ./VibeCode.AppImage`}
                 </code>
               </div>
             </div>
